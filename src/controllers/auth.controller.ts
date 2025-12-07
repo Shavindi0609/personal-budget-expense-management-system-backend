@@ -4,19 +4,52 @@ import bcrypt from "bcryptjs";
 import { generateAccessToken, generateRefreshToken } from "../utils/token";
 import jwt from "jsonwebtoken";
 
+// export const register = async (req: Request, res: Response) => {
+//   const { name, email, password } = req.body;
+//   if (!name || !email || !password) return res.status(400).json({ message: "Missing fields" });
+
+//   const existing = await User.findOne({ email });
+//   if (existing) return res.status(400).json({ message: "User already exists" });
+
+//   const salt = await bcrypt.genSalt(10);
+//   const hashed = await bcrypt.hash(password, salt);
+
+//   const user = await User.create({ name, email, password: hashed });
+//   res.status(201).json({ message: "Registered", userId: user._id });
+// };
+
 export const register = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
-  if (!name || !email || !password) return res.status(400).json({ message: "Missing fields" });
+  if (!name || !email || !password)
+    return res.status(400).json({ message: "Missing fields" });
 
+  // Check if user already exists
   const existing = await User.findOne({ email });
-  if (existing) return res.status(400).json({ message: "User already exists" });
+  if (existing)
+    return res.status(400).json({ message: "User already exists" });
 
+  // Hash password
   const salt = await bcrypt.genSalt(10);
   const hashed = await bcrypt.hash(password, salt);
 
-  const user = await User.create({ name, email, password: hashed });
-  res.status(201).json({ message: "Registered", userId: user._id });
+  // Check if this is the first user in the database
+  const isFirstUser = (await User.countDocuments({})) === 0;
+
+  // Create user with role admin if first user, else normal user
+  const user = await User.create({
+    name,
+    email,
+    password: hashed,
+    role: isFirstUser ? "admin" : "user", // admin if first
+  });
+
+  res.status(201).json({
+    message: `Registered successfully${isFirstUser ? " (Admin)" : ""}`,
+    userId: user._id,
+    role: user.role,
+  });
 };
+
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
