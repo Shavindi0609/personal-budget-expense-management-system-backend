@@ -8,6 +8,9 @@ import authRoutes from "./routes/auth.routes";
 // import incomeRoutes from "./routes/income.routes";
 // import aiRoutes from "./routes/ai.routes";
 import { errorHandler } from "./middleware/error.middleware";
+import categoryRoutes from "./routes/category.routes";
+
+
 
 dotenv.config();
 
@@ -26,6 +29,8 @@ if (!process.env.MONGO_URI) {
 connectDB(process.env.MONGO_URI as string);
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/categories", categoryRoutes);
+
 // app.use("/api/v1/categories", categoryRoutes);
 // app.use("/api/v1/expenses", expenseRoutes);
 // app.use("/api/v1/incomes", incomeRoutes);
