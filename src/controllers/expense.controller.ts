@@ -18,26 +18,55 @@ export const createExpense = async (req: Request, res: Response) => {
   res.status(201).json({ expense });
 };
 
+
 export const getExpenses = async (req: Request, res: Response) => {
   const userId = (req as any).user?.id;
-  // Accept query params for filtering (month, category)
   const { category, from, to } = req.query as any;
   const filter: any = { user: userId };
+
   if (category) filter.category = category;
   if (from || to) filter.date = {};
   if (from) filter.date.$gte = new Date(from);
   if (to) filter.date.$lte = new Date(to);
 
-  const expenses = await Expense.find(filter).populate("category").sort({ date: -1 });
+  // Remove populate
+  const expenses = await Expense.find(filter)
+    .sort({ date: -1 })
+    .lean(); // optional, for better performance
+
   res.json({ expenses });
 };
 
 export const getExpenseById = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const expense = await Expense.findById(id).populate("category");
+
+  // Remove populate
+  const expense = await Expense.findById(id).lean();
   if (!expense) return res.status(404).json({ message: "Not found" });
+
   res.json({ expense });
 };
+
+// export const getExpenses = async (req: Request, res: Response) => {
+//   const userId = (req as any).user?.id;
+//   // Accept query params for filtering (month, category)
+//   const { category, from, to } = req.query as any;
+//   const filter: any = { user: userId };
+//   if (category) filter.category = category;
+//   if (from || to) filter.date = {};
+//   if (from) filter.date.$gte = new Date(from);
+//   if (to) filter.date.$lte = new Date(to);
+
+//   const expenses = await Expense.find(filter).populate("category").sort({ date: -1 });
+//   res.json({ expenses });
+// };
+
+// export const getExpenseById = async (req: Request, res: Response) => {
+//   const { id } = req.params;
+//   const expense = await Expense.findById(id).populate("category");
+//   if (!expense) return res.status(404).json({ message: "Not found" });
+//   res.json({ expense });
+// };
 
 export const updateExpense = async (req: Request, res: Response) => {
   const { id } = req.params;
