@@ -9,6 +9,7 @@ import authRoutes from "./routes/auth.routes";
 // import aiRoutes from "./routes/ai.routes";
 import { errorHandler } from "./middleware/error.middleware";
 import categoryRoutes from "./routes/category.routes";
+import expenseRoutes from "./routes/expense.routes";
 
 
 
@@ -30,6 +31,7 @@ connectDB(process.env.MONGO_URI as string);
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/categories", categoryRoutes);
+app.use("/api/v1/expenses", expenseRoutes);
 
 // app.use("/api/v1/categories", categoryRoutes);
 // app.use("/api/v1/expenses", expenseRoutes);
@@ -43,45 +45,3 @@ app.listen(PORT, () => {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//************ package.json ***********
-
-// {
-//   "name": "personal-budget-expense-management-system-be",
-//   "version": "1.0.0",
-//   "description": "",
-//   "main": "index.js",
-//   "scripts": {
-//     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-//     "build": "tsc",
-//     "start": "node dist/index.js"
-//   },
-//   "keywords": [],
-//   "author": "",
-//   "license": "ISC",
-//   "devDependencies": {
-//     "@types/express": "^5.0.5",
-//     "@types/mongoose": "^5.11.96",
-//     "@types/node": "^24.10.1",
-//     "ts-node-dev": "^2.0.0",
-//     "typescript": "^5.9.3"
-//   },
-//   "dependencies": {
-//     "express": "^5.1.0",
-//     "mongoose": "^9.0.0"
-//   }
-// }
