@@ -59,3 +59,33 @@ export const getGoals = async (req: Request, res: Response) => {
   const goals = await SavingsGoal.find({ user: userId });
   res.json(goals);
 };
+
+export const addSavingsToGoal = async (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const { goalId } = req.params;
+  const { amount } = req.body;
+
+  if (!amount || amount <= 0) {
+    return res.status(400).json({ message: "Valid amount required" });
+  }
+
+  const goal = await SavingsGoal.findOne({
+    _id: goalId,
+    user: userId,
+  });
+
+  if (!goal) {
+    return res.status(404).json({ message: "Goal not found" });
+  }
+
+  goal.currentAmount += Number(amount);
+
+  // 🔒 prevent exceeding target (optional but recommended)
+  if (goal.currentAmount > goal.targetAmount) {
+    goal.currentAmount = goal.targetAmount;
+  }
+
+  await goal.save();
+
+  res.json(goal);
+};
