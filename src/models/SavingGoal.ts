@@ -1,6 +1,13 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Types, Document } from "mongoose";
 
-const savingsGoalSchema = new Schema(
+export interface ISavingsGoal extends Document {
+  user: Types.ObjectId;
+  title: string;
+  targetAmount: number;
+  currentAmount: number;
+}
+
+const savingsGoalSchema = new Schema<ISavingsGoal>(
   {
     user: { type: Types.ObjectId, ref: "User", required: true },
     title: { type: String, required: true },
@@ -10,4 +17,4 @@ const savingsGoalSchema = new Schema(
   { timestamps: true }
 );
 
-export default model("SavingsGoal", savingsGoalSchema);
+export default model<ISavingsGoal>("SavingsGoal", savingsGoalSchema);
