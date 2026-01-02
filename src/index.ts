@@ -42,8 +42,6 @@ app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/ai", aiRoutes);
 
 
-
-
 // app.use("/api/v1/categories", categoryRoutes);
 // app.use("/api/v1/expenses", expenseRoutes);
 // app.use("/api/v1/incomes", incomeRoutes);
