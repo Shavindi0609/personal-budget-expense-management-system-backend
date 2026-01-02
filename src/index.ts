@@ -13,6 +13,7 @@ import incomeRoutes from "./routes/income.routes";
 import savingRoutes from "./routes/saving.routes";
 import adminRoutes from "./routes/admin.routes";
 import aiRoutes from "./routes/ai.routes"
+import adminUsersRoutes from "./routes/admin.users.routes"
 
 
 
@@ -40,6 +41,8 @@ app.use("/api/v1/savings", savingRoutes);
 app.use("/api/v1/admin", adminRoutes);
 // ✅ AI routes
 app.use("/api/v1/ai", aiRoutes);
+app.use("/api/v1/adminuser", adminUsersRoutes);
+
 
 
 // app.use("/api/v1/categories", categoryRoutes);
