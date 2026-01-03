@@ -14,6 +14,7 @@ import savingRoutes from "./routes/saving.routes";
 import adminRoutes from "./routes/admin.routes";
 import aiRoutes from "./routes/ai.routes"
 import adminUsersRoutes from "./routes/admin.users.routes"
+import profileRoutes from "./routes/profile.routes"
 
 
 
@@ -41,7 +42,10 @@ app.use("/api/v1/savings", savingRoutes);
 app.use("/api/v1/admin", adminRoutes);
 // ✅ AI routes
 app.use("/api/v1/ai", aiRoutes);
-app.use("/api/v1/adminuser", adminUsersRoutes);
+app.use("/api/v1/admin/users", adminUsersRoutes);
+app.use("/api/v1/profile", profileRoutes);
+
+
 
 
 
