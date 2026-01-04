@@ -15,6 +15,7 @@ import adminRoutes from "./routes/admin.routes";
 import aiRoutes from "./routes/ai.routes"
 import adminUsersRoutes from "./routes/admin.users.routes"
 import profileRoutes from "./routes/profile.routes"
+import googleAuthRoures from "./routes/google.auth.routes"
 
 
 
@@ -44,6 +45,10 @@ app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/ai", aiRoutes);
 app.use("/api/v1/admin/users", adminUsersRoutes);
 app.use("/api/v1/profile", profileRoutes);
+// server.ts
+app.use("/api/v1/auth", googleAuthRoures);
+
+
 
 
 
