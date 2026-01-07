@@ -5,6 +5,7 @@ import Expense from "../models/Expense";
 import Income from "../models/Income";
 import Category from "../models/Category";
 
+/* ================= MONTHLY SAVINGS ================= */
 export const getMonthlySavings = async (req: Request, res: Response) => {
   const userId = new mongoose.Types.ObjectId((req as any).user.id);
   const { month } = req.query;
@@ -37,12 +38,15 @@ export const getMonthlySavings = async (req: Request, res: Response) => {
   });
 };
 
+/* ================= CREATE GOAL (WITH IMAGE) ================= */
 export const createGoal = async (req: Request, res: Response) => {
   const userId = (req as any).user.id;
-  const { title, targetAmount } = req.body;
+  const { title, targetAmount, image } = req.body;
 
   if (!title || !targetAmount) {
-    return res.status(400).json({ message: "Title & targetAmount required" });
+    return res
+      .status(400)
+      .json({ message: "Title & targetAmount required" });
   }
 
   const goal = await SavingsGoal.create({
@@ -50,16 +54,20 @@ export const createGoal = async (req: Request, res: Response) => {
     title,
     targetAmount,
     currentAmount: 0,
+    image: image || "", // ✅ NEW
   });
 
   res.status(201).json(goal);
 };
 
+/* ================= GET GOALS ================= */
 export const getGoals = async (req: Request, res: Response) => {
   const userId = (req as any).user.id;
   const goals = await SavingsGoal.find({ user: userId });
   res.json(goals);
 };
+
+/* ================= ADD SAVINGS TO GOAL ================= */
 export const addSavingsToGoal = async (req: Request, res: Response) => {
   const userId = new mongoose.Types.ObjectId((req as any).user.id);
   const { goalId } = req.params;
@@ -69,12 +77,16 @@ export const addSavingsToGoal = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Valid amount required" });
   }
 
-  const goal = await SavingsGoal.findOne({ _id: goalId, user: userId });
+  const goal = await SavingsGoal.findOne({
+    _id: goalId,
+    user: userId,
+  });
+
   if (!goal) {
     return res.status(404).json({ message: "Goal not found" });
   }
 
-  // Update goal
+  // Update goal amount
   goal.currentAmount += Number(amount);
   if (goal.currentAmount > goal.targetAmount) {
     goal.currentAmount = goal.targetAmount;
@@ -87,16 +99,15 @@ export const addSavingsToGoal = async (req: Request, res: Response) => {
     savingsCategory = await Category.create({ name: "Savings" });
   }
 
-  // Add Expense record with Savings category
+  // Create expense record
   await Expense.create({
     user: userId,
     title: `Savings: ${goal.title}`,
     amount: Number(amount),
-    category: savingsCategory._id, // 🔹 auto assign
+    category: savingsCategory._id,
     notes: `Added to savings goal: ${goal.title}`,
     date: new Date(),
   });
 
   res.json(goal);
 };
-
