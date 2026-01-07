@@ -25,15 +25,29 @@ const app = express();
 app.use(express.json());
 
 const FRONTEND = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
-app.use(cors({ origin: FRONTEND }));
+// app.use(cors({ origin: FRONTEND }));
 
-const PORT = process.env.SERVER_PORT || 5000;
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://jolly-frangipane-074582.netlify.app",
+    ],
+    credentials: true,
+  })
+);
+
+const PORT = process.env.SERVER_PORT || 5001;
 
 if (!process.env.MONGO_URI) {
   console.error("MONGO_URI missing in env");
   process.exit(1);
 }
 connectDB(process.env.MONGO_URI as string);
+
+app.get("/", (_req, res) => {
+  res.send("API is running 🚀");
+});
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/categories", categoryRoutes);
